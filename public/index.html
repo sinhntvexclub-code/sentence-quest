@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Sentence Quest — Chinh phục 1000 câu</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 19 9 5l4 7 3-4 5 11H3z"/></svg> Sentence Quest</h1>
+  <div id="userChip" class="hidden"></div>
+</header>
+<main>
+  <!-- DANG NHAP / DANG KY -->
+  <section id="screen-auth" class="card">
+    <h2>Chào mừng đến Sentence Quest</h2>
+    <p class="muted">Chơi 80 chặng viết lại câu tiếng Anh. Đăng nhập để lưu tiến trình lên máy chủ.</p>
+    <div class="tabs">
+      <button id="tabLogin" class="tabbtn active" onclick="showAuthTab('login')">Đăng nhập</button>
+      <button id="tabRegister" class="tabbtn" onclick="showAuthTab('register')">Đăng ký</button>
+    </div>
+    <form id="formLogin" onsubmit="doLogin(event)">
+      <input id="loginUser" placeholder="Tên đăng nhập" required autocomplete="username">
+      <input id="loginPass" type="password" placeholder="Mật khẩu" required autocomplete="current-password">
+      <button class="primary" type="submit">Đăng nhập</button>
+    </form>
+    <form id="formRegister" class="hidden" onsubmit="doRegister(event)">
+      <input id="regUser" placeholder="Tên đăng nhập (không dấu, không khoảng trắng)" required>
+      <input id="regName" placeholder="Họ và tên" required>
+      <input id="regClass" placeholder="Lớp (VD: 12A1)">
+      <input id="regPass" type="password" placeholder="Mật khẩu (tối thiểu 4 ký tự)" required>
+      <input id="regTeacherCode" placeholder="Mã giáo viên (chỉ giáo viên mới nhập)">
+      <button class="primary" type="submit">Tạo tài khoản</button>
+    </form>
+    <p id="authMsg" class="msg"></p>
+  </section>
+
+  <!-- MAN HINH CHINH -->
+  <section id="screen-main" class="hidden">
+    <div class="stats">
+      <span><svg class="ic" viewBox="0 0 24 24" fill="#C6A14A" aria-hidden="true"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg> <b id="statStars">0</b> sao</span>
+      <span><svg class="ic" viewBox="0 0 24 24" fill="#E8A100" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg> <b id="statXp">0</b> XP</span>
+      <span><svg class="ic" viewBox="0 0 24 24" fill="#C6A14A" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5" fill="#f4f1ea"/><circle cx="12" cy="12" r="2.2"/></svg> <b id="statCoins">0</b> xu</span>
+      <span><svg class="ic" viewBox="0 0 24 24" fill="#E05A00" aria-hidden="true"><path d="M12 2c1 4-4 6-4 11a4 4 0 0 0 8 0c0-2-1-3-1-3s3 2 3 6a6 6 0 0 1-12 0C6 9 11 6 12 2z"/></svg> <b id="statStreak">0</b> ngày</span>
+      <button onclick="logout()">Đăng xuất</button>
+    </div>
+    <div id="dueBanner"></div>
+    <nav class="tabs">
+      <button class="tabbtn active" onclick="showTab('map')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg> Chặng</button>
+      <button class="tabbtn" onclick="showTab('review')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg> Ôn tập</button>
+      <button class="tabbtn" onclick="showTab('board')"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 3h14v2h3v6a5 5 0 0 1-5 5h-.42A6 6 0 0 1 13 19.92V21h4v2H7v-2h4v-1.08A6 6 0 0 1 7.42 16H7a5 5 0 0 1-5-5V5h3V3zm14 4v4a3 3 0 0 0 3-3V7h-3zM4 7H1v1a3 3 0 0 0 3 3V7z"/></svg> Bảng tuần</button>
+      <button class="tabbtn" onclick="showTab('room')"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 19a6.5 6.5 0 0 1 13 0v1h-13v-1z"/><circle cx="17.5" cy="9" r="2.8"/><path d="M16.5 13.6a5.5 5.5 0 0 1 5 5.4v1h-5v-6.4z"/></svg> Phòng</button>
+      <button class="tabbtn" id="teacherTabBtn" onclick="showTab('teacher')"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6H4z"/></svg> Giáo viên</button>
+    </nav>
+    <div id="tab-map"></div>
+    <div id="tab-review" class="hidden"></div>
+    <div id="tab-board" class="hidden"></div>
+    <div id="tab-room" class="hidden"></div>
+    <div id="tab-teacher" class="hidden"></div>
+  </section>
+
+  <!-- MAN HINH CHOI -->
+  <section id="screen-play" class="hidden">
+    <div class="playhead">
+      <span id="playTitle"></span>
+      <span><svg class="ic" viewBox="0 0 24 24" fill="#D0230F" aria-hidden="true"><path d="M12 21s-7-4.6-9.5-8.6C.6 9 2.5 5 6 5c2 0 3.5 1 4.5 2.6C11.5 6 13 5 15 5c3.5 0 5.4 4 3.5 7.4C19 16.4 12 21 12 21z"/></svg> <b id="playHearts">3</b> · <b id="playScore">0</b> điểm</span>
+    </div>
+    <div class="progress"><div id="playBar"></div></div>
+    <p id="playOriginal" class="original"></p>
+    <p id="playInstruction" class="instruction"></p>
+    <div id="playArea"></div>
+    <div id="playFeedback" class="hidden"></div>
+    <div class="row">
+      <button id="btnCheck" class="primary" onclick="submitAnswer()">Chấm</button>
+      <button id="btnNext" class="hidden" onclick="nextQuestion()">Câu tiếp theo →</button>
+      <button onclick="quitPlay()">Thoát</button>
+    </div>
+    <p id="timer" class="timer hidden"></p>
+  </section>
+
+  <!-- MANHINH QUIZ DON (thi vuot / on tap) -->
+  <section id="screen-quiz" class="hidden">
+    <h2 id="quizTitle"></h2>
+    <p id="quizOriginal" class="original"></p>
+    <p id="quizInstruction" class="instruction"></p>
+    <input id="quizInput" placeholder="Gõ câu trả lời..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <div id="quizFeedback" class="hidden"></div>
+    <div class="row">
+      <button id="quizCheck" class="primary" onclick="submitQuiz()">Chấm</button>
+      <button id="quizNext" class="hidden" onclick="nextQuiz()">Câu tiếp theo →</button>
+      <button onclick="quitQuiz()">Thoát</button>
+    </div>
+  </section>
+
+  <!-- PHONG TIEP SUC -->
+  <section id="screen-room" class="hidden">
+    <h2 id="roomTitle"></h2>
+    <p id="roomInfo" class="muted"></p>
+    <p id="roomQuestion" class="original"></p>
+    <p id="roomInstruction" class="instruction"></p>
+    <div id="roomAnswerArea" class="hidden">
+      <input id="roomInput" placeholder="Đến lượt em — gõ câu trả lời..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button class="primary" onclick="submitRoomAnswer()">Trả lời</button>
+    </div>
+    <p id="roomWait" class="muted"></p>
+    <div id="roomSummary"></div>
+    <button onclick="leaveRoom()">Rời phòng</button>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
