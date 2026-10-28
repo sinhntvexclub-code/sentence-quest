@@ -1,0 +1,1 @@
+{"dependencies":{"@neondatabase/serverless":"^0.10.4","bcryptjs":"^2.4.3","jsonwebtoken":"^9.0.2"},"description":"Sentence Quest — game luyen viet lai cau tieng Anh, chay tren Vercel + Neon Postgres (toan bo goi mien phi).","name":"sentence-quest-server","private":true,"scripts":{"dev":"vercel dev"},"version":"1.0.0"}

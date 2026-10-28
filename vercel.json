@@ -1,0 +1,1 @@
+{"rewrites":[{"destination":"/public/index.html","source":"/"},{"destination":"/public/app.js","source":"/app.js"},{"destination":"/public/style.css","source":"/style.css"},{"destination":"/public/game-data.json","source":"/game-data.json"}]}
