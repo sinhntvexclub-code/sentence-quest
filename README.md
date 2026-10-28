@@ -117,6 +117,15 @@ pg_dump "<DATABASE_URL>" > backup-$(date +%F).sql
 - **Vercel Hobby:** đủ cho một trường/lớp dùng bình thường. Function chạy
   tối đa 10 giây/lượt gọi — các API trong gói này đều là 1–2 câu SQL nên
   thoải mái trong giới hạn đó.
+- **Giới hạn 12 Serverless Functions của gói Hobby:** Vercel Hobby chỉ cho
+  tối đa 12 function mỗi deployment, nên gói này đã gộp route: 15 API gốc
+  được đóng thành đúng 7 function (`api/auth/[...all].js`,
+  `api/teacher/[...all].js`, `api/rooms/[[...all]].js` và 4 file riêng
+  `progress`, `attempts`, `leaderboard`, `reports`; file trong `api/_lib/`
+  chỉ là code dùng chung, không tính là function). URL frontend gọi và
+  hành vi/kiểm tra quyền/SQL của từng endpoint đều giữ nguyên — chỉ đổi
+  cách tổ chức file phía server. Khi thêm API mới, phải gộp vào 1 trong
+  7 function này, đừng tạo file route mới nếu không muốn vượt giới hạn.
 - **Neon Free:** compute tự ngủ sau 5 phút không dùng (lần truy cập đầu
   sau khi ngủ sẽ chậm 1–3 giây rồi chạy bình thường), dung lượng ~0.25 GB —
   đủ cho vài trăm học sinh chơi cả năm (mỗi lượt chơi chỉ là 1 dòng nhỏ).
