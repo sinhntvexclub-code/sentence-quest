@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Sentence Quest — Chinh phục 1000 câu</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>🏔️ Sentence Quest</h1>
+  <div id="userChip" class="hidden"></div>
+</header>
+<main>
+  <!-- DANG NHAP / DANG KY -->
+  <section id="screen-auth" class="card">
+    <h2>Chào mừng đến Sentence Quest</h2>
+    <p class="muted">Chơi 80 chặng viết lại câu tiếng Anh. Đăng nhập để lưu tiến trình lên máy chủ.</p>
+    <div class="tabs">
+      <button id="tabLogin" class="tabbtn active" onclick="showAuthTab('login')">Đăng nhập</button>
+      <button id="tabRegister" class="tabbtn" onclick="showAuthTab('register')">Đăng ký</button>
+    </div>
+    <form id="formLogin" onsubmit="doLogin(event)">
+      <input id="loginUser" placeholder="Tên đăng nhập" required autocomplete="username">
+      <input id="loginPass" type="password" placeholder="Mật khẩu" required autocomplete="current-password">
+      <button class="primary" type="submit">Đăng nhập</button>
+    </form>
+    <form id="formRegister" class="hidden" onsubmit="doRegister(event)">
+      <input id="regUser" placeholder="Tên đăng nhập (không dấu, không khoảng trắng)" required>
+      <input id="regName" placeholder="Họ và tên" required>
+      <input id="regClass" placeholder="Lớp (VD: 12A1)">
+      <input id="regPass" type="password" placeholder="Mật khẩu (tối thiểu 4 ký tự)" required>
+      <input id="regTeacherCode" placeholder="Mã giáo viên (chỉ giáo viên mới nhập)">
+      <button class="primary" type="submit">Tạo tài khoản</button>
+    </form>
+    <p id="authMsg" class="msg"></p>
+  </section>
+
+  <!-- MAN HINH CHINH -->
+  <section id="screen-main" class="hidden">
+    <div class="stats">
+      <span>⭐ <b id="statStars">0</b> sao</span>
+      <span>⚡ <b id="statXp">0</b> XP</span>
+      <span>🪙 <b id="statCoins">0</b> xu</span>
+      <span>🔥 <b id="statStreak">0</b> ngày</span>
+      <button onclick="logout()">Đăng xuất</button>
+    </div>
+    <div id="dueBanner"></div>
+    <nav class="tabs">
+      <button class="tabbtn active" onclick="showTab('map')">🗺️ Chặng</button>
+      <button class="tabbtn" onclick="showTab('review')">📦 Ôn tập</button>
+      <button class="tabbtn" onclick="showTab('board')">🏆 Bảng tuần</button>
+      <button class="tabbtn" onclick="showTab('room')">👥 Phòng</button>
+      <button class="tabbtn" id="teacherTabBtn" onclick="showTab('teacher')">🧑‍🏫 Giáo viên</button>
+    </nav>
+    <div id="tab-map"></div>
+    <div id="tab-review" class="hidden"></div>
+    <div id="tab-board" class="hidden"></div>
+    <div id="tab-room" class="hidden"></div>
+    <div id="tab-teacher" class="hidden"></div>
+  </section>
+
+  <!-- MAN HINH CHOI -->
+  <section id="screen-play" class="hidden">
+    <div class="playhead">
+      <span id="playTitle"></span>
+      <span>❤️ <b id="playHearts">3</b> · <b id="playScore">0</b> điểm</span>
+    </div>
+    <div class="progress"><div id="playBar"></div></div>
+    <p id="playOriginal" class="original"></p>
+    <p id="playInstruction" class="instruction"></p>
+    <div id="playArea"></div>
+    <div id="playFeedback" class="hidden"></div>
+    <div class="row">
+      <button id="btnCheck" class="primary" onclick="submitAnswer()">Chấm</button>
+      <button id="btnNext" class="hidden" onclick="nextQuestion()">Câu tiếp theo →</button>
+      <button onclick="quitPlay()">Thoát</button>
+    </div>
+    <p id="timer" class="timer hidden"></p>
+  </section>
+
+  <!-- MANHINH QUIZ DON (thi vuot / on tap) -->
+  <section id="screen-quiz" class="hidden">
+    <h2 id="quizTitle"></h2>
+    <p id="quizOriginal" class="original"></p>
+    <p id="quizInstruction" class="instruction"></p>
+    <input id="quizInput" placeholder="Gõ câu trả lời..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <div id="quizFeedback" class="hidden"></div>
+    <div class="row">
+      <button id="quizCheck" class="primary" onclick="submitQuiz()">Chấm</button>
+      <button id="quizNext" class="hidden" onclick="nextQuiz()">Câu tiếp theo →</button>
+      <button onclick="quitQuiz()">Thoát</button>
+    </div>
+  </section>
+
+  <!-- PHONG TIEP SUC -->
+  <section id="screen-room" class="hidden">
+    <h2 id="roomTitle"></h2>
+    <p id="roomInfo" class="muted"></p>
+    <p id="roomQuestion" class="original"></p>
+    <p id="roomInstruction" class="instruction"></p>
+    <div id="roomAnswerArea" class="hidden">
+      <input id="roomInput" placeholder="Đến lượt em — gõ câu trả lời..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button class="primary" onclick="submitRoomAnswer()">Trả lời</button>
+    </div>
+    <p id="roomWait" class="muted"></p>
+    <div id="roomSummary"></div>
+    <button onclick="leaveRoom()">Rời phòng</button>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
